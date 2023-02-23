@@ -5,7 +5,7 @@ use std::collections::BTreeSet;
 
 
 struct ActualTree {
-    height: usize
+    height: isize
 }
 type TreeMatrix = Vec<Vec<ActualTree>>;
 
@@ -20,7 +20,7 @@ fn main() {
             line
                 .unwrap()
                 .chars()
-                .map(|c| ActualTree { height: c.to_string().parse::<usize>().unwrap() })
+                .map(|c| ActualTree { height: c.to_string().parse::<isize>().unwrap() })
                 .collect::<Vec<ActualTree>>()
         })
         .collect::<TreeMatrix>();
@@ -35,46 +35,44 @@ fn main() {
 
     let mut visible_trees: BTreeSet<(usize, usize)> = BTreeSet::new();
 
-    // from the west
+    // from the west 
     let mut from_west: usize = 0;
-    for (i, row) in forest.iter().enumerate() {
-        let mut tallest: usize = 0;
-        for (j, actual_tree) in row.iter().enumerate() {
+    for i in 0..forest.len() {
+        let mut tallest: isize = -1;
+        for j in 0..forest.get(i).unwrap().len() {
+            let actual_tree = forest.get(i).unwrap().get(j).unwrap();
             if actual_tree.height > tallest {
                 tallest = actual_tree.height;
                 visible_trees.insert((i, j));
                 from_west += 1;
-                print!("{}", actual_tree.height);
-            } else {
-                print!(" ");
             }
         }
-        println!("");
     }
     println!("{} trees visible from the west", from_west);
-
-    // from the east
+    
+    // from the east 
     let mut from_east: usize = 0;
-    for (i, row) in forest.iter().enumerate() {
-        let mut tallest: usize = 0;
-        for (j, actual_tree) in row.iter().rev().enumerate() {
+    for i in 0..forest.len() {
+        let mut tallest: isize = -1;
+        for j in (0..forest.get(i).unwrap().len()).rev() {
+            let actual_tree = forest.get(i).unwrap().get(j).unwrap();
             if actual_tree.height > tallest {
                 tallest = actual_tree.height;
-                visible_trees.insert((i, row.len() - j));
+                visible_trees.insert((i, j));
                 from_east += 1;
             }
         }
     }
     println!("{} trees visible from the east", from_east);
 
-    // from the north
+    // from the north 
     let mut from_north: usize = 0;
-    for (j, _) in forest.first().expect("No rows!").iter().enumerate() {
-        let mut tallest: usize = 0;
-        for (i, row) in forest.iter().enumerate() {
-            let height = row.get(j).unwrap().height;
-            if height > tallest {
-                tallest = height;
+    for j in 0..forest.first().unwrap().len() {
+        let mut tallest: isize = -1;
+        for i in 0..forest.len() {
+            let actual_tree = forest.get(i).unwrap().get(j).unwrap();
+            if actual_tree.height > tallest {
+                tallest = actual_tree.height;
                 visible_trees.insert((i, j));
                 from_north += 1;
             }
@@ -82,15 +80,15 @@ fn main() {
     }
     println!("{} trees visible from the north", from_north);
 
-    // from the south
+    // from the south 
     let mut from_south: usize = 0;
-    for (j, _) in forest.first().expect("No rows!").iter().enumerate() {
-        let mut tallest: usize = 0;
-        for (i, row) in forest.iter().rev().enumerate() {
-            let height = row.get(j).unwrap().height;
-            if height > tallest {
-                tallest = height;
-                visible_trees.insert((forest.len() - i, j));
+    for j in 0..forest.first().unwrap().len() {
+        let mut tallest: isize = -1;
+        for i in (0..forest.len()).rev() {
+            let actual_tree = forest.get(i).unwrap().get(j).unwrap();
+            if actual_tree.height > tallest {
+                tallest = actual_tree.height;
+                visible_trees.insert((i, j));
                 from_south += 1;
             }
         }
