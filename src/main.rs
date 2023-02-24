@@ -10,22 +10,7 @@ struct ActualTree {
 type TreeMatrix = Vec<Vec<ActualTree>>;
 
 
-fn main() {
-    let path = env::args().nth(1).expect("No file provided!");
-    let forest: TreeMatrix = io::BufReader::new(
-        fs::File::open(path).expect("Could not open file!"))
-        .lines()
-        .into_iter()
-        .map(|line| {
-            line
-                .unwrap()
-                .chars()
-                .map(|c| ActualTree { height: c.to_string().parse::<isize>().unwrap() })
-                .collect::<Vec<ActualTree>>()
-        })
-        .collect::<TreeMatrix>();
-
-    println!("{} rows parsed.", forest.len());
+fn get_visible_trees(forest: &TreeMatrix) -> usize {
 
     // One option would be to evaluate for each tree if it is visible in the grid,
     // this seems very costly though. Instead we count the sets of coordinates 
@@ -95,8 +80,32 @@ fn main() {
     }
     println!("{} trees visible from the south", from_south);
 
+    visible_trees.len()
+
+}
+
+
+
+fn main() {
+    let path = env::args().nth(1).expect("No file provided!");
+    let forest: TreeMatrix = io::BufReader::new(
+        fs::File::open(path).expect("Could not open file!"))
+        .lines()
+        .into_iter()
+        .map(|line| {
+            line
+                .unwrap()
+                .chars()
+                .map(|c| ActualTree { height: c.to_string().parse::<isize>().unwrap() })
+                .collect::<Vec<ActualTree>>()
+        })
+        .collect::<TreeMatrix>();
+
+    println!("{} rows parsed.", forest.len());
+
+    let part_one = get_visible_trees(&forest);
+
     // print results
-    println!("Number of visible trees: {}", visible_trees.len());
-    // dbg!(visible_trees);
+    println!("Number of visible trees: {}", part_one);
 
 }
